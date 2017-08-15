@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Paerls in the box</title>
+	<script>
+		var marbles = 'bwbwbwb', step = 5;
+		boxProbability(marbles, step);
+
+		function boxProbability(marbles, step) {
+			var black = 0, white = 0, 
+			oldFront = new Array(), newFront = new Array();
+			
+			for (var i = 0; i < marbles.length; i++) {
+				( marbles[i] === 'b')? black++ : white ++;
+			}
+			var box = new Box(black, white);
+			list = new List();
+			list.add(box);
+		}
+
+		function Box (black, white){
+			this.black = black;
+			this.white = white;
+			this.possibility = 1;
+
+			this.chanceOfBlack = function(){
+				if ((this.black - 1) < 0) return false;
+			}
+
+			this.chanceOfWhite = function(){
+				if ((this.white - 1) < 0) return false;
+			}
+
+			this.reductionOfBlack = function(){
+				this.possibility = this.black / (this.black + this.white);
+				this.black -= 1;
+				this.white += 1;
+			}
+
+			this.reductionOfWhite = function(){
+				this.possibility = this.white / (this.black + this.white);
+				this.white -= 1;
+				this.black += 1;
+			}
+		}
+
+		function Node(data){
+			this.data = data;
+			this.next = null;
+		}
+
+		function List(){
+			this._length = 0;
+			this.head = null;
+			
+
+			this.add = function(value){
+				var node = new Node(value),
+				currentNode = this.head;
+
+				if(!currentNode){
+					this.head = node;
+					this._length++;
+
+					return node;
+				}
+
+				while (currentNode.next) {
+					currentNode = currentNode.next;
+				}
+
+				currentNode.next = node;
+				this._length++;
+
+				return node;
+			}
+
+			this.searchNodeAt = function(position){
+				var currentNode = this.head,
+				length = this._length,
+				count = 1;
+
+				while(count < position) {
+					currentNode = currentNode.next;
+					count ++;
+				}
+
+			return currentNode;
+			}
+			
+		}
+
+		/*
+		List.prototype.add = function(value){
+			var node = new Node(value),
+			currentNode = this.head;
+
+			if(!currentNode){
+				this.head = node;
+				this._length++;
+
+				return node;
+			}
+
+			while (currentNode.next) {
+				currentNode = currentNode.next;
+			}
+
+			currentNode.next = node;
+			this._length++;
+
+			return node;
+		}
+		
+
+		List.prototype.searchNodeAt = function(position){
+			var currentNode = this.head,
+			length = this._length,
+			count = 1;
+
+			while(count < position) {
+				currentNode = currentNode.next;
+				count ++;
+			}
+
+			return currentNode;
+		}
+		
+		*/
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
