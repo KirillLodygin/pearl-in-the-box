@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Paerls in the box</title>
 	<script>
-		var marbles = 'wwwbb', step = 3;
+		var marbles = 'wwwwwwwwwwwwwwwwwwww', step = 20;
 		console.log(boxProbability(marbles, step));
 
 		function boxProbability(marbles, step) {
@@ -15,12 +15,72 @@
 				(marbles[i] === 'b')? black++ : white ++;
 			}
 			var box = new Box(black, white);
+
+			Box.prototype.chanceOfBlack =  function(){
+				if ((this.black - 1) < 0) return false;
+			}
+			Box.prototype.chanceOfWhite = function(){
+				if ((this.white - 1) < 0) return false;
+			}
+
 			let list = new List();
+
+			List.prototype.add = function(value){
+				var node = new Node(value),
+				currentNode = this.head;
+
+				if(!currentNode){
+					this.head = node;
+					this._length++;
+
+					return node;
+				}
+
+				while (currentNode.next) {
+					currentNode = currentNode.next;
+				}
+
+				currentNode.next = node;
+				this._length++;
+
+				return node;
+			}
+
+			List.prototype.searchNodeAt = function(position){
+				var currentNode = this.head,
+				length = this._length,
+				count = 1;
+
+				while(count < position) {
+					currentNode = currentNode.next;
+					count ++;
+				}
+
+			return currentNode;
+			}
+
+			List.prototype.remove = function(){
+				var currentNode = this.head;
+				this.head = currentNode.next;
+				this._length--;
+			}
+
 			list.add(box);
 			oldFront.push(list);
 			
 			for (let i = 0; i < step; i++) {
 				newFront = [];
+
+				if (i%5 === 0){
+					for (let el of oldFront){
+						el.searchNodeAt(el._length).data.possibility = calculatePossibility(el);
+						var len = el._length;
+						for (let y = 1; y < len; y++){
+							el.remove();
+						}
+					}
+				}
+
 				for (let el of oldFront){
 					if (!el.searchNodeAt(el._length).data.chanceOfBlack() && (step - i) > 1) {
 						let list = new List();
@@ -55,7 +115,7 @@
 				poss += calculatePossibility(el);
 			}
 
-			return poss.toFixed(2);
+			return +poss.toFixed(2);
 		}
 
 		function calculatePossibility(list){
@@ -70,15 +130,6 @@
 			this.black = black;
 			this.white = white;
 			this.possibility = 1;
-
-			this.chanceOfBlack = function(){
-				if ((this.black - 1) < 0) return false;
-			}
-
-			this.chanceOfWhite = function(){
-				if ((this.white - 1) < 0) return false;
-			}
-			
 		}
 
 		function Node(data){
@@ -89,42 +140,6 @@
 		function List(){
 			this._length = 0;
 			this.head = null;
-			
-
-			this.add = function(value){
-				var node = new Node(value),
-				currentNode = this.head;
-
-				if(!currentNode){
-					this.head = node;
-					this._length++;
-
-					return node;
-				}
-
-				while (currentNode.next) {
-					currentNode = currentNode.next;
-				}
-
-				currentNode.next = node;
-				this._length++;
-
-				return node;
-			}
-
-			this.searchNodeAt = function(position){
-				var currentNode = this.head,
-				length = this._length,
-				count = 1;
-
-				while(count < position) {
-					currentNode = currentNode.next;
-					count ++;
-				}
-
-			return currentNode;
-			}
-			
 		}
 
 	</script>
