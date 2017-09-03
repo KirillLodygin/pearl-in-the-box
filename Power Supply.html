@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Power Supply</title>
+	<script>
+		var network = [['c0', 'p1'], ['p1', 'c2'], ['c2', 'c3'], ['c2', 'c4'], ['c4', 'c5'],
+                     ['c5', 'c6'], ['c5', 'p7']], power_plants = {'p1': 1, 'p7': 1};
+        console.log(powerSupply(network, power_plants));
+
+		function powerSupply(network, power_plants) {
+			var lists = new Array(), targetNodes = new Array(), citys = new Array();
+
+			for (let couple in network) {
+				for (let el in couple) {
+					let overlap = 0;
+					for (let list in network) {
+						if (list.indexOf(el) >= 0) overlap++;
+					}
+					if (overlap == 1) targetNodes.push(el);
+				}
+			}
+
+			for (key in power_plants) {
+				targetNodes.splice(targetNodes.indexOf(key), 1);
+			}
+		}n
+
+		function Node(data){
+			this.data = data;
+			this.next = null;
+		}
+
+		function SinglyList() {
+			this._length = 0;
+			this.head = null;
+		}
+
+		SinglyList.prototype.add = function(value){
+			var node = new Node(value),
+			currentNode = this.head;
+
+			if (!currentNode) {
+				this.head = node;
+				this._length++;
+				return node;
+			}
+
+			while (currentNode.next) {
+				currentNode = currentNode.next;
+			}
+
+			currentNode.next = node;
+			this._length++;
+
+			return node;
+		}
+
+		SinglyList.prototype.searchNodeAt = function(position) {
+			var currentNode = this.head,
+			length = this._length,
+			count = 1,
+			message = {failure: 'Non-existen node in this list'};
+
+			if (length === 0 || position < 1 || position > length) {
+				throw new Error (message.failure);
+			}
+
+			while (count < position) {
+				currentNode = currentNode.next;
+				count++;
+			}
+
+			return currentNode;
+		}
+
+		SinglyList.prototype.remove = function(position) {
+			var currentNode = this.head,
+			length = this._length,
+			count = 0,
+			message = {failure: 'Non-existen node in this list'},
+			beforeNodeToDelete = null,
+			nodeToDelete = null,
+			deletedNode = null;
+
+			if (position < 0 || position > length) {
+				throw new Error(message.failure);
+			}
+
+			if (position == 1) {
+				this.head = currentNode.next;
+				deletedNode = currentNode;
+				currentNode = null;
+				this._length--;
+
+				return deletedNode;
+			}
+
+			while(count < position) {
+				beforeNodeToDelete = currentNode;
+				nodeToDelete = currentNode.next;
+				count++;
+			}
+
+			beforeNodeToDelete.next = nodeToDelete.next;
+			deletedNode = nodeToDelete;
+			nodeToDelete = null;
+			this._length--;
+
+			return deletedNode;
+		}
+
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
