@@ -8,122 +8,47 @@
 		console.log(boxProbability(marbles, step));
 
 		function boxProbability(marbles, step) {
-			var black = 0, white = 0, poss = 0,
+    		var black = pearlsQuantity(marbles.match(/b/g)), 
+			white = pearlsQuantity(marbles.match(/w/g)), poss = 0,
 			oldFront = new Array(), newFront = new Array();
 			
-			for (var i = 0; i < marbles.length; i++) {
-				(marbles[i] === 'b')? black++ : white ++;
-			}
 			var box = new Box(black, white);
 
-			Box.prototype.chanceOfBlack =  function(){
+			Box.prototype.chanceOfBlack = () => {
 				if ((this.black - 1) < 0) return false;
 			}
-			Box.prototype.chanceOfWhite = function(){
+			
+			Box.prototype.chanceOfWhite = () => {
 				if ((this.white - 1) < 0) return false;
 			}
-
-			let list = new List();
-
-			List.prototype.add = function(value){
-				var node = new Node(value),
-				currentNode = this.head;
-
-				if(!currentNode){
-					this.head = node;
-					this._length++;
-
-					return node;
-				}
-
-				while (currentNode.next) {
-					currentNode = currentNode.next;
-				}
-
-				currentNode.next = node;
-				this._length++;
-
-				return node;
-			}
-
-			List.prototype.searchNodeAt = function(position){
-				var currentNode = this.head,
-				length = this._length,
-				count = 1;
-
-				while(count < position) {
-					currentNode = currentNode.next;
-					count ++;
-				}
-
-			return currentNode;
-			}
-
-			List.prototype.remove = function(){
-				var currentNode = this.head;
-				this.head = currentNode.next;
-				this._length--;
-			}
-
-			list.add(box);
-			oldFront.push(list);
+			
+			oldFront.push(box);
 			
 			for (let i = 0; i < step; i++) {
-				newFront = [];
-
-				if (i%5 === 0){
-					for (let el of oldFront){
-						el.searchNodeAt(el._length).data.possibility = calculatePossibility(el);
-						var len = el._length;
-						for (let y = 1; y < len; y++){
-							el.remove();
-						}
-					}
-				}
-
 				for (let el of oldFront){
-					if (!el.searchNodeAt(el._length).data.chanceOfBlack() && (step - i) > 1) {
-						let list = new List();
-						for (let y = 1; y < el._length + 1; y++){
-							list.add(el.searchNodeAt(y).data);
-						}
-
-						let bbox = new Box(list.searchNodeAt(list._length).data.black - 1, el.searchNodeAt(list._length).data.white + 1);
-						bbox.possibility = list.searchNodeAt(list._length).data.black / (list.searchNodeAt(list._length).data.black + 
-						list.searchNodeAt(list._length).data.white);
-						list.add(bbox);
-						newFront.push(list);
+					if (!el.chanceOfBlack() && (step - i) > 1) {
+						let bbox = new Box(el.black - 1, el.white + 1);
+						bbox.possibility = el.possibility * (el.black / 
+                		(el.black + el.white));
+						newFront.push(bbox);
 					}
 					
-					if (!el.searchNodeAt(el._length).data.chanceOfWhite()){
-						let list = new List();
-						for (let y = 1; y < el._length + 1; y++){
-							list.add(el.searchNodeAt(y).data);
-						}
-
-						let wbox = new Box(list.searchNodeAt(list._length).data.black + 1, list.searchNodeAt(list._length).data.white - 1);
-						wbox.possibility = list.searchNodeAt(list._length).data.white / (list.searchNodeAt(list._length).data.black + 
-						list.searchNodeAt(list._length).data.white);
-						list.add(wbox);
-						newFront.push(list);
+					if (!el.chanceOfWhite()){
+						let wbox = new Box(el.black + 1, el.white - 1);
+						wbox.possibility = el.possibility * (el.white / (el.black + el.white));
+						newFront.push(wbox);
 					}
 				}
+				
 				oldFront = newFront;
+				newFront = [];
 			}
 
 			for (let el of oldFront){
-				poss += calculatePossibility(el);
+				poss += el.possibility;
 			}
 
 			return +poss.toFixed(2);
-		}
-
-		function calculatePossibility(list){
-			let calculate = 1;
-			for (let i = 1; i < list._length + 1; i++) {
-				calculate = calculate * list.searchNodeAt(i).data.possibility;
-			}
-			return calculate;
 		}
 
 		function Box (black, white){
@@ -132,14 +57,12 @@
 			this.possibility = 1;
 		}
 
-		function Node(data){
-			this.data = data;
-			this.next = null;
-		}
-
-		function List(){
-			this._length = 0;
-			this.head = null;
+		function pearlsQuantity(arr){
+			if(!arr){
+				return 0
+			} else{
+				return arr.length
+			}
 		}
 
 	</script>
