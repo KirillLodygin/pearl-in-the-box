@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Power Supply</title>
+	<script>
+		var network = [['p1', 'c2'], ['p1', 'c4'], ['c4', 'c3'], ['c2', 'c3']], power_plants = {'p1': 1};
+
+        console.log(powerSupply(network, power_plants));
+
+		function powerSupply(network, power_plants) {
+			var citys = new Array(), chain = new Array(), oldFront = new Array(), 
+			front = new Array(), newFront = new Array();
+
+			for (let key in power_plants){
+				front.push(key);
+				chain.push(key);
+				var count = 0;
+
+				while (count < power_plants[key]){
+					for (let el of front){
+						for (let couple of network){
+							if(couple.indexOf(el) >= 0){
+								for(let one of couple){
+									if (one != el){
+										if (oldFront.indexOf(one) >= 0){
+										} else {
+											newFront.push(one);
+											if (chain.indexOf(one) >= 0){
+											} else chain.push(one);
+											
+										}
+									}
+								}
+							}
+						}
+					}
+					if (newFront.length == 0) break;
+					oldFront = front;
+					front = newFront;
+					newFront = [];
+					count++;
+				}
+				oldFront = [];
+				front = [];
+			}
+			
+			for (let couple of network){
+				for (let el of couple){
+					if (chain.indexOf(el) >= 0){
+					} else {
+						if (citys.indexOf(el) >= 0){
+						} else {
+							citys.push(el);
+						}
+					}
+				}
+			}
+
+			return citys;
+		}
+
+
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
