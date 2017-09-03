@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>networkAttack</title>
+	<script>
+		var data = [[0, 1, 0, 1, 0, 1],
+	                      [1, 8, 1, 0, 0, 0],
+	                      [0, 1, 2, 0, 0, 1],
+	                      [1, 0, 0, 1, 1, 0],
+	                      [0, 0, 0, 1, 3, 1],
+	                      [1, 0, 1, 0, 1, 2]];
+
+        console.log('Время заражения сети - ' + capture(data));
+
+		function capture(data){
+			var ourWeb = [];
+			var attackTime = new Object;
+
+			for (let i = 0; i < data.length; i++) {
+				var webLevel = [];
+				for (let j = 0; j < data[i].length; j++) {
+					if ((data[i][j] == 1) && (data[i][j] == data[j][i]) && (i != j) && (j != 0))webLevel.push(j);
+				}
+				ourWeb.push(webLevel);
+				var name = String(i);
+				attackTime[name] = data[i][i];
+			}
+			
+			var networkAttack = [], nodes = [0], infectionTime = 0;
+
+			do {
+				for (let i = 0; i < nodes.length; i++) {
+					for (let j = 0; j < ourWeb[nodes[i]].length; j++) {
+						if (networkAttack.indexOf(ourWeb[nodes[i]][j]) >= 0){
+						} else{
+							networkAttack.push(ourWeb[nodes[i]][j]);
+						}
+					}
+				}
+
+				networkAttack = networkAttack.filter(function(el){
+					return el > 0;
+				});
+
+				if (networkAttack.length == 0) break;
+
+				nodes = [];
+
+				var minTime = attackTime[String(networkAttack[0])];
+
+				for (let i = 0; i < networkAttack.length; i++) {
+				if (minTime > attackTime[String(networkAttack[i])]) 
+					minTime =  attackTime[String(networkAttack[i])];
+				}
+				infectionTime += minTime;
+
+				for (let i = 0; i <networkAttack.length; i++){
+					attackTime[String(networkAttack[i])] -= minTime;
+					
+					if (attackTime[String(networkAttack[i])] == 0){
+						for (let j = 0; j < ourWeb.length; j++){
+							if (ourWeb[j].indexOf(networkAttack[i]) >= 0) {
+								ourWeb[j].splice(ourWeb[j].indexOf(networkAttack[i]), 1);
+							}
+						}
+
+						nodes.push(networkAttack[i]);
+
+						networkAttack[i] = 0;
+					}
+				}
+				
+			} while(networkAttack.length > 0);
+
+			return infectionTime;
+
+		}
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
