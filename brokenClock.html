@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Broken Clock</title>
+	<script>
+		var startingTime = '13:00:00', 
+		wrongTime = '14:01:00',
+		errorDescription = '+1 second at 1 minute';
+		console.log(brokenClock(startingTime, wrongTime, errorDescription));
+
+		function brokenClock(startingTime, wrongTime, errorDescription){
+			var difference = (strToNum(wrongTime.split(':')[0]) - strToNum(startingTime.split(':')[0])) * 3600 + 
+							 (strToNum(wrongTime.split(':')[1]) - strToNum(startingTime.split(':')[1])) * 60 +
+							 (strToNum(wrongTime.split(':')[2]) - strToNum(startingTime.split(':')[2]));
+
+			let i = 1, timeWithError = 0;
+			
+			while (i < 5) {
+				switch (errorDescription.split(' ')[i]){
+					case 'hours':
+					case 'hour':
+						var n = 3600;
+						break;
+					case 'minutes':
+					case 'minute':
+						var n = 60;
+						break;
+					default:
+						var n = 1;
+				}
+				timeWithError += Number(errorDescription.split(' ')[i - 1]) * n;
+				i += 3;
+			}
+
+			var realTime = parseInt((difference / timeWithError) * strToNum(errorDescription.split(' ')[3])*n) +
+							strToNum(startingTime.split(':')[0]) * 3600 +
+							strToNum(startingTime.split(':')[1]) * 60 + 
+							strToNum(startingTime.split(':')[2]);
+
+			
+			var timeToStr = numToStr((realTime - realTime % 3600)/3600) + numToStr((realTime%3600 - (realTime%3600)%60)/60) + 
+				numToStr((realTime % 3600) % 60);
+
+			return timeToStr.slice(0, -1);
+		}
+
+		function strToNum(str){
+			if (str == '00') str ='0';
+			return Number(str);
+		}
+
+		function numToStr(num){
+			if (String(num).length == 1) {
+				var str = '0' + String(num) + ':';
+			} else {
+				var str = String(num) + ':';
+			}
+			return str;
+		}
+
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
