@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>xoReferee</title>
+	<script>
+	var map =[
+        "O..",
+        "XOX",
+        "..O"];
+
+    console.log(xoReferee(map));
+
+	function xoReferee(data) {
+		var variants = {
+			".": 0.1,
+			"X": 1,
+			"O": 2
+		}, result;
+
+		console.log('Первый этап');
+		for (let y = 0; y < 3; y++) {
+			let count = 0;
+			for (let x = 0; x <3; x++) {
+				if (data[y][x] in variants){
+					count += variants[data[y][x]];
+				}
+			}
+			result = identifyResult(count);
+			if (result != "D") return result;
+		}
+
+		console.log('Второй этап');
+		for (let x = 0; x < 3; x++) {
+			let count = 0;
+			for (let y = 0; y < 3; y++){
+				if (data[y][x] in variants){
+					count += variants[data[y][x]];
+				}
+			}
+			result = identifyResult(count);
+			if (result != "D") return result;
+		}
+
+		console.log('Третий этап');
+		if ((data[0][0] === data[1][1] && data[2][2] === data[1][1]) ||
+			(data[0][2] === data[1][1] && data[2][0] === data[1][1])) {
+			result = data[1][1];
+		}
+
+		if (result == ".") result = "D";
+
+		return result;
+	}
+
+	function identifyResult(value){
+		switch(value){
+				case 3:
+					return 'X';
+				case 6:
+					return 'O';
+				default:
+					return 'D';
+
+			}
+	}
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
