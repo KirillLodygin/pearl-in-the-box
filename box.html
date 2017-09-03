@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script>
+		function Box (black, white){
+			this.black = black;
+			this.white = white;
+
+			this.reduceSumOfBlack = function(){
+				this.black -=1;
+				this.white +=1;
+			}
+
+			this.reduceSumOfWhite = function(){
+				this.white -=1;
+				this.black +=1;
+			}
+		}
+
+		var box = new Box(3,5);
+		console.log(box);
+		console.log('black - ' + box.black);
+		console.log('white - ' + box.white);
+		console.log('reduceSumOfBlack');
+		box.reduceSumOfBlack();
+		console.log('black - ' + box.black);
+		console.log('white - ' + box.white);
+		console.log('reduceSumOfWhite');
+		box.reduceSumOfWhite();
+		console.log('black - ' + box.black);
+		console.log('white - ' + box.white);
+
+	</script>
+</head>
+<body>
+	
+</body>
+</html>
